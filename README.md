@@ -8,7 +8,7 @@ This Ruby gem provides an extension for ActiveRecord allowing you to declare cer
 This feature can be used for a couple of different purposes.
 
 1. Preventing changes to data that should be immutable.
-2. Adding a guard to prevent direct data updates that bypass required business logic.
+2. Prevent direct data updates that bypass required business logic.
 
 ## Usage
 
