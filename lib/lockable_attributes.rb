@@ -58,11 +58,8 @@ module LockableAttributes
   end
 
   module ClassMethods
-    # Locks the given attributes so that they cannot be changed directly. If a hash is given, the
-    # keys are the attributes and the values are the error messages to use when the attributes are
-    # unexpectedly changed.
-    #
-    # Subclasses inherit the locked attributes from their parent classes.
+    # Locks the given attributes so that they cannot be changed directly. Subclasses inherit
+    # the locked attributes from their parent classes.
     #
     # @param attributes [Array<Symbol, String>] the attributes to lock
     # @param error [String, Symbol] the error message to use in validate errors
@@ -90,8 +87,7 @@ module LockableAttributes
   # are unlocked only for the duration of the block.
   #
   # @param attributes [Array<Symbol, String>] the attributes to unlock
-  # @return [void]
-  # @yieldreturn [Object] the result of the block
+  # @return [Object, nil] the return value of the block, if given
   def unlock_attributes(*attributes)
     attributes = attributes.flatten.map(&:to_s)
     return if attributes.empty?
@@ -108,10 +104,11 @@ module LockableAttributes
       end
     else
       @unlocked_attributes.merge(attributes)
+      nil
     end
   end
 
-  # Returns whether the given attribute is locked.
+  # Returns true if the given attribute is currently locked.
   #
   # @param attribute [Symbol, String] the attribute to check
   # @return [Boolean] whether the attribute is locked
