@@ -42,7 +42,7 @@ class MyModel < ApplicationRecord
 end
 ```
 
-### Allowing changes
+### Unlocking Attributes
 
 You can allow changes to locked attributes with the `unlock_attributes` method.
 
@@ -52,7 +52,7 @@ record.unlock_attributes(:created_at, :created_by)
 record.update!(created_at: Time.now, created_by: nil) # Changes are persisted
 ```
 
-You can also supply a block to `unlock_attributes` which will clear any allowed fields after the block exits.
+You can also supply a block to `unlock_attributes` which will clear any unlocked attributes when the block exits.
 
 ```
 record = MyModel.last
@@ -65,7 +65,7 @@ record.update!(created_at: Time.now) # => raises ActiveRecord::RecordInvalid
 
 ### Using As A Guard
 
-You can use this feature as a guard to prevent direct updates to certain attributes and force any such updates to go through specific methods instead.
+You can use locked attributes as a guard to prevent direct updates to certain attributes and force changes to go through specific methods instead.
 
 For example, suppose we have some business logic that needs to execute whenever the `status` field is changed. You might wrap that logic up into a method or service object. For this example, suppose that we want to send some kind of alert any time the status is changed.
 
@@ -81,14 +81,14 @@ record = MyModel.last
 record.update_status("completed")
 ```
 
-This has the risk, though, that you can still make direct updates to the `status` bypassing our existing business logic.
+This has the risk, though, that you can still make direct updates to the `status` which would bypass the additional business logic.
 
 ```ruby
 record = MyModel.last
 record.update!(status: "canceled") # StatusAlert method is not called.
 ```
 
-You can prevent this by locking the `status` attribute.
+You can prevent this by locking the `status` attribute and then unlocking it within the method that includes the required business logic.
 
 ```ruby
 class MyModel
