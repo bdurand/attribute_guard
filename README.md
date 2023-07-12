@@ -32,13 +32,13 @@ record.created_at = Time.now
 record.save! # => raises ActiveRecord::RecordInvalid
 ```
 
-You can customize the error message for the validation if you want either by setting the value of the `errors.messages.locked` value in your i18n localization files or by supplying a hash to the `lock_attributes` method of a specific attribute.
+You can customize the validation error message by setting the value of the `errors.messages.locked` value in your i18n localization files. You can also specify an error message with the optional `error` keyword argument.
 
 ```ruby
 class MyModel < ApplicationRecord
   include LockableAttributes
 
-  lock_attributes created_at: "cannot be changed except by an admin"
+  lock_attributes :created_by, error: "cannot be changed except by an admin"
 end
 ```
 

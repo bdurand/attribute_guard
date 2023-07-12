@@ -64,19 +64,15 @@ module LockableAttributes
     #
     # Subclasses inherit the locked attributes from their parent classes.
     #
-    # @param attributes [Array<Symbol, String, Hash<Symbol, String>>] the attributes to lock
+    # @param attributes [Array<Symbol, String>] the attributes to lock
+    # @param error [String, Symbol] the error message to use in validate errors
     # @return [void]
-    def lock_attributes(*attributes)
+    def lock_attributes(*attributes, error: :locked)
       locked = locked_attributes.dup
+      error = error.dup.freeze if error.is_a?(String)
 
       attributes.flatten.each do |attribute|
-        if attribute.is_a?(Hash)
-          attribute.each do |attr, message|
-            locked[attr.to_s] = message
-          end
-        else
-          locked[attribute.to_s] = :locked
-        end
+        locked[attribute.to_s] = error
       end
 
       self.locked_attributes = locked

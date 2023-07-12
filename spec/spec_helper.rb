@@ -43,7 +43,7 @@ class TestModel < BaseModel
 end
 
 class TestModelSubclass < TestModel
-  lock_attributes value: "Value cannot be changed message"
+  lock_attributes :value, error: "Value cannot be changed message"
 end
 
 class UnlockedModel < BaseModel
