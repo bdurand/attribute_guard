@@ -1,6 +1,6 @@
 # Unified Application Configuration :construction:
 
-[![Continuous Integration](https://github.com/bdurand/lockable_attributes/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/bdurand/lockable_attributes/actions/workflows/continuous_integration.yml)
+[![Continuous Integration](https://github.com/bdurand/attribute_guard/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/bdurand/attribute_guard/actions/workflows/continuous_integration.yml)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 This Ruby gem provides an extension for ActiveRecord allowing you to declare certain attributes in a model to be locked. Locked attributes cannot be changed once a record is created unless you explicitly allow changes.
@@ -14,11 +14,11 @@ This feature can be used for a couple of different purposes.
 
 ### Declaring Locked Attributes
 
-To declare locked attributes you simply need to include the `LockableAttributes` module into your model and then list the attributes with the `lock_attributes` method.
+To declare locked attributes you simply need to include the `AttributeGuard` module into your model and then list the attributes with the `lock_attributes` method.
 
 ```ruby
 class MyModel < ApplicationRecord
-  include LockableAttributes
+  include AttributeGuard
 
   lock_attributes :created_by, :created_at
 end
@@ -36,7 +36,7 @@ You can customize the validation error message by setting the value of the `erro
 
 ```ruby
 class MyModel < ApplicationRecord
-  include LockableAttributes
+  include AttributeGuard
 
   lock_attributes :created_by, error: "cannot be changed except by an admin"
 end
@@ -92,7 +92,7 @@ You can prevent this by locking the `status` attribute and then unlocking it wit
 
 ```ruby
 class MyModel
-  include LockableAttributes
+  include AttributeGuard
 
   lock_attributes :status
 
@@ -114,7 +114,7 @@ record.update!(status: "canceled") # raises ActiveRecord::RecordInvalid error
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "lockable_attributes"
+gem "attribute_guard"
 ```
 
 Then execute:
@@ -124,12 +124,12 @@ $ bundle
 
 Or install it yourself as:
 ```bash
-$ gem install lockable_attributes
+$ gem install attribute_guard
 ```
 
 ## Contributing
 
-Open a pull request on [GitHub](https://github.com/bdurand/lockable_attributes).
+Open a pull request on [GitHub](https://github.com/bdurand/attribute_guard).
 
 Please use the [standardrb](https://github.com/testdouble/standard) syntax and lint your code with `standardrb --fix` before submitting.
 

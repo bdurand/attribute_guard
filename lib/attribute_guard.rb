@@ -13,7 +13,7 @@ end
 #
 # @example
 #   class User < ActiveRecord::Base
-#     include LockableAttributes
+#     include AttributeGuard
 #
 #     lock_attributes :name, :email
 #   end
@@ -33,7 +33,7 @@ end
 #
 #   user.name = "Test 4"
 #   user.save! # => raises ActiveRecord::RecordInvalid
-module LockableAttributes
+module AttributeGuard
   extend ActiveSupport::Concern
 
   included do

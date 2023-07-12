@@ -16,7 +16,7 @@ Bundler.require(:default, :test)
 
 require "active_record"
 
-require_relative "../lib/lockable_attributes"
+require_relative "../lib/attribute_guard"
 
 ActiveRecord::Base.establish_connection("adapter" => "sqlite3", "database" => ":memory:")
 
@@ -35,7 +35,7 @@ class BaseModel < ActiveRecord::Base
     end
   end
 
-  include LockableAttributes
+  include AttributeGuard
 end
 
 class TestModel < BaseModel
