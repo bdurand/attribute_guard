@@ -1,0 +1,4 @@
+en:
+  errors:
+    messages:
+      locked: "is locked and cannot be changed"
