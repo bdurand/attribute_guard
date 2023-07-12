@@ -32,9 +32,6 @@ jobs:
             appraisal: "activerecord_6"
           - ruby: "2.6"
             appraisal: "activerecord_5"
-          - ruby: "2.5"
-            appraisal: "activerecord_4.2"
-            bundler: "1.17.3"
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby }}
