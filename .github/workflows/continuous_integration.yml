@@ -27,13 +27,13 @@ jobs:
           - ruby: "ruby"
             standardrb: true
           - ruby: "3.0"
-            activerecord: "7"
+            appraisal: "activerecord_7"
           - ruby: "2.7"
-            activerecord: "6"
+            appraisal: "activerecord_6"
           - ruby: "2.6"
-            activerecord: "5"
+            appraisal: "activerecord_5"
           - ruby: "2.5"
-            activerecord: "4.2"
+            appraisal: "activerecord_4.2"
             bundler: "1.17.3"
     steps:
     - uses: actions/checkout@v2

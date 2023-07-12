@@ -18,6 +18,8 @@ To declare locked attributes you simply need to include the `LockableAttributes`
 
 ```ruby
 class MyModel < ApplicationRecord
+  include LockableAttributes
+
   lock_attributes :created_by, :created_at
 end
 ```
@@ -34,6 +36,8 @@ You can customize the error message for the validation if you want either by set
 
 ```ruby
 class MyModel < ApplicationRecord
+  include LockableAttributes
+
   lock_attributes created_at: "cannot be changed except by an admin"
 end
 ```
@@ -88,6 +92,10 @@ You can prevent this by locking the `status` attribute.
 
 ```ruby
 class MyModel
+  include LockableAttributes
+
+  lock_attributes :status
+
   def update_status(new_status)
     unlock_attributes(:status) do
       update!(status: new_status)
