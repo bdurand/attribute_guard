@@ -26,6 +26,9 @@ class BaseModel < ActiveRecord::Base
       t.column :type, :string, null: false
       t.column :name, :string, null: false
       t.column :value, :integer, null: true
+      t.column :foo, :integer, null: true
+      t.column :bar, :integer, null: true
+      t.column :baz, :integer, null: true
     end
 
     self.abstract_class = true
@@ -34,6 +37,16 @@ class BaseModel < ActiveRecord::Base
       self.type = self.class.name
     end
   end
+
+  @@logger_output = StringIO.new
+
+  class << self
+    def logger_output
+      @@logger_output
+    end
+  end
+
+  self.logger = Logger.new(@@logger_output)
 
   include AttributeGuard
 end
@@ -44,6 +57,8 @@ end
 
 class TestModelSubclass < TestModel
   lock_attributes :value, error: "Value cannot be changed message"
+  lock_attributes :foo, :bar, mode: :warn
+  lock_attributes :baz, mode: ->(record, attribute) { record.errors.add(attribute, "Custom error") }
 end
 
 class UnlockedModel < BaseModel

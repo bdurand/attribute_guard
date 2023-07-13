@@ -6,7 +6,7 @@ describe AttributeGuard do
   describe "lock_attributes" do
     it "return the names of the locked attributes" do
       expect(TestModel.locked_attribute_names).to match_array ["name"]
-      expect(TestModelSubclass.locked_attribute_names).to match_array ["name", "value"]
+      expect(TestModelSubclass.locked_attribute_names).to match_array ["name", "value", "foo", "bar", "baz"]
       expect(UnlockedModel.locked_attribute_names).to match_array []
     end
   end
@@ -94,6 +94,21 @@ describe AttributeGuard do
       record.value = 2
       expect(record.valid?).to be false
       expect(record.errors[:value]).to eq ["Value cannot be changed message"]
+    end
+
+    it "logs a warning if the mode is set to :warn" do
+      record = TestModelSubclass.create!(name: "test", foo: 1)
+      record.foo = 2
+      TestModelSubclass.logger_output.rewind
+      expect(record.valid?).to be true
+      expect(TestModelSubclass.logger_output.string).to include "Changed locked attribute foo on TestModelSubclass with id #{record.id}"
+    end
+
+    it "calls a custom proc in the validator if one is provided as the mode" do
+      record = TestModelSubclass.create!(name: "test", baz: 1)
+      record.baz = 2
+      expect(record.valid?).to be false
+      expect(record.errors[:baz]).to eq ["Custom error"]
     end
   end
 end

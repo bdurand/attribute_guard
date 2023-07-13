@@ -49,9 +49,16 @@ module AttributeGuard
     def validate(record)
       return if record.new_record?
 
-      record.class.send(:locked_attributes).each do |attribute, message|
+      record.class.send(:locked_attributes).each do |attribute, params|
         if record.changes.include?(attribute) && record.attribute_locked?(attribute)
-          record.errors.add(attribute, message)
+          message, mode = params
+          if mode == :warn
+            record&.logger&.warn("Changed locked attribute #{attribute} on #{record.class.name} with id #{record.id}")
+          elsif mode.is_a?(Proc)
+            mode.call(record, attribute)
+          else
+            record.errors.add(attribute, message)
+          end
         end
       end
     end
@@ -61,15 +68,20 @@ module AttributeGuard
     # Locks the given attributes so that they cannot be changed directly. Subclasses inherit
     # the locked attributes from their parent classes.
     #
+    # You can optionally specify a mode of what to do when a locked attribute is changed. The
+    # default is to add an error to the model, but you can also specify :warn to log a warning
+    # or a Proc to call with the record and attribute name.
+    #
     # @param attributes [Array<Symbol, String>] the attributes to lock
-    # @param error [String, Symbol] the error message to use in validate errors
+    # @param error [String, Symbol, Boolean] the error message to use in validate errors
+    # @param mode [Symbol, Proc] mode to use when a locked attribute is changed
     # @return [void]
-    def lock_attributes(*attributes, error: :locked)
+    def lock_attributes(*attributes, error: :locked, mode: :error)
       locked = locked_attributes.dup
       error = error.dup.freeze if error.is_a?(String)
 
       attributes.flatten.each do |attribute|
-        locked[attribute.to_s] = error
+        locked[attribute.to_s] = [error, mode]
       end
 
       self.locked_attributes = locked

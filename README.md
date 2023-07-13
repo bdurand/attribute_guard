@@ -109,6 +109,26 @@ record.update_status("completed") # Status gets updated
 record.update!(status: "canceled") # raises ActiveRecord::RecordInvalid error
 ```
 
+### Modes
+
+The default behavior when a locked attribute is changed is to add a validation error to the record. You can change this behavior with the `mode` option when locking attributes.
+
+```ruby
+class MyModel
+  include AttributeGuard
+
+  lock_attributes :email, mode: :error
+  lock_attributes :name: mode: :warn
+  lock_attributes :created_at, mode: ->(record, attribute) { raise "Created timestamp cannot be changed" }
+end
+```
+
+* `:error` - Add a validation error to the record. This is the default.
+
+* `:warn` - Log a warning that the record was changed. This mode is useful to allow you soft deploy locked attributes to production on a mature project and give you information about where you may need to update code to unlock attributes.
+
+* `Proc` - If you provide a `Proc` object, it will be called with the record and the attribute name when a locked attribute is changed.
+
 ## Installation
 
 Add this line to your application's Gemfile:
