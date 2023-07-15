@@ -39,23 +39,32 @@ describe AttributeGuard do
 
     it "is false if the attribute is explicitly unlocked in a block" do
       record = TestModelSubclass.create!(name: "test", value: 1)
-      retval = record.unlock_attributes(:name) do
+      record.unlock_attributes(:name) do
         expect(record.attribute_locked?(:name)).to be false
         expect(record.attribute_locked?(:value)).to be true
 
-        retval = record.unlock_attributes(:value) do
+        record.unlock_attributes(:value) do
           expect(record.attribute_locked?(:name)).to be false
           expect(record.attribute_locked?(:value)).to be false
         end
 
         expect(record.attribute_locked?(:name)).to be false
         expect(record.attribute_locked?(:value)).to be true
-
-        :val
       end
-      expect(retval).to eq :val
       expect(record.attribute_locked?(:name)).to be true
       expect(record.attribute_locked?(:value)).to be true
+    end
+  end
+
+  describe "unlock_attributes" do
+    it "returns self when called without a block" do
+      record = TestModel.create!(name: "test", value: 1)
+      expect(record.unlock_attributes(:name)).to be record
+    end
+
+    it "returns the result of the block when called with a block" do
+      record = TestModel.create!(name: "test", value: 1)
+      expect(record.unlock_attributes(:name) { 1 }).to be record
     end
   end
 

@@ -46,7 +46,7 @@ end
 
 You can allow changes to locked attributes with the `unlock_attributes` method.
 
-```
+```ruby
 record = MyModel.last
 record.unlock_attributes(:created_at, :created_by)
 record.update!(created_at: Time.now, created_by: nil) # Changes are persisted
@@ -54,13 +54,19 @@ record.update!(created_at: Time.now, created_by: nil) # Changes are persisted
 
 You can also supply a block to `unlock_attributes` which will clear any unlocked attributes when the block exits.
 
-```
+```ruby
 record = MyModel.last
 record.unlock_attributes(:created_at) do
   record.update!(created_at: Time.now) # Changes are persisted
 end
 
 record.update!(created_at: Time.now) # => raises ActiveRecord::RecordInvalid
+```
+
+The `unlock_attributes` method will return the record itself, so you can chain other instance methods off of it.
+
+```ruby
+record.unlock_attributes(:created_at).update!(created_at: Time.now)
 ```
 
 ### Using As A Guard

@@ -98,8 +98,13 @@ module AttributeGuard
   # Unlocks the given attributes so that they can be changed. If a block is given, the attributes
   # are unlocked only for the duration of the block.
   #
+  # This method returns the object itself so that it can be chained.
+  #
+  # @example
+  #   user.unlock_attributes(:email).update!(email: "user@example.com")
+  #
   # @param attributes [Array<Symbol, String>] the attributes to unlock
-  # @return [Object, nil] the return value of the block, if given
+  # @return [ActiveRecord::Base] the object itself
   def unlock_attributes(*attributes)
     attributes = attributes.flatten.map(&:to_s)
     return if attributes.empty?
@@ -116,8 +121,9 @@ module AttributeGuard
       end
     else
       @unlocked_attributes.merge(attributes)
-      nil
     end
+
+    self
   end
 
   # Returns true if the given attribute is currently locked.
