@@ -1,4 +1,4 @@
-# Active Record Attribute Guard :construction:
+# Active Record Attribute Guard
 
 [![Continuous Integration](https://github.com/bdurand/attribute_guard/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/bdurand/attribute_guard/actions/workflows/continuous_integration.yml)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
