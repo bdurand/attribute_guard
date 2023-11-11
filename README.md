@@ -1,6 +1,7 @@
 # Active Record Attribute Guard
 
 [![Continuous Integration](https://github.com/bdurand/attribute_guard/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/bdurand/attribute_guard/actions/workflows/continuous_integration.yml)
+[![Regression Test](https://github.com/bdurand/attribute_guard/actions/workflows/regression_test.yml/badge.svg)](https://github.com/bdurand/attribute_guard/actions/workflows/regression_test.yml)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 
 This Ruby gem provides an extension for ActiveRecord allowing you to declare certain attributes in a model to be locked. Locked attributes cannot be changed once a record is created unless you explicitly allow changes.
