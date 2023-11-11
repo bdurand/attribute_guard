@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Optimize object shapes for the Ruby interpreter by declaring instance variables in constructors.
 
-## 1.0.0 (unreleased)
+## 1.0.0
 
 ### Added
 - Initial release.
