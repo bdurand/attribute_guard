@@ -42,6 +42,15 @@ module AttributeGuard
     private_class_method :locked_attributes
 
     validates_with LockedAttributesValidator
+
+    prepend Initializer
+  end
+
+  module Initializer
+    def initialize(*)
+      @unlocked_attributes = nil
+      super
+    end
   end
 
   # Validator that checks for changes to locked attributes.
@@ -110,6 +119,7 @@ module AttributeGuard
     return if attributes.empty?
 
     @unlocked_attributes ||= Set.new
+
     if block_given?
       save_val = @unlocked_attributes
       begin
@@ -136,19 +146,15 @@ module AttributeGuard
     attribute = attribute.to_s
     return false unless self.class.send(:locked_attributes).include?(attribute)
 
-    if defined?(@unlocked_attributes)
-      !@unlocked_attributes.include?(attribute.to_s)
-    else
-      true
-    end
+    return true if @unlocked_attributes.nil?
+
+    !@unlocked_attributes.include?(attribute.to_s)
   end
 
   # Clears any unlocked attributes.
   #
   # @return [void]
   def clear_unlocked_attributes
-    if defined?(@unlocked_attributes)
-      remove_instance_variable(:@unlocked_attributes)
-    end
+    @unlocked_attributes = nil
   end
 end
