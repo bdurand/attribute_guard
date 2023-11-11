@@ -146,7 +146,7 @@ module AttributeGuard
     attribute = attribute.to_s
     return false unless self.class.send(:locked_attributes).include?(attribute)
 
-    return true if @unlocked_attributes == nil
+    return true if @unlocked_attributes.nil?
 
     !@unlocked_attributes.include?(attribute.to_s)
   end
