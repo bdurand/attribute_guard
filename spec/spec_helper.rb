@@ -29,6 +29,7 @@ class BaseModel < ActiveRecord::Base
       t.column :foo, :integer, null: true
       t.column :bar, :integer, null: true
       t.column :baz, :integer, null: true
+      t.column :bip, :integer, null: true
     end
 
     self.abstract_class = true
@@ -59,7 +60,17 @@ class TestModelSubclass < TestModel
   lock_attributes :value, error: "Value cannot be changed message"
   lock_attributes :foo, :bar, mode: :warn
   lock_attributes :baz, mode: ->(record, attribute) { record.errors.add(attribute, "Custom error") }
+  lock_attributes :bip, mode: :strict
 end
 
 class UnlockedModel < BaseModel
+end
+
+class GenericModel
+  include ActiveModel::Model
+  include AttributeGuard
+
+  attr_accessor :name, :value
+
+  lock_attributes :name
 end

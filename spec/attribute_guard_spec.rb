@@ -5,8 +5,9 @@ require_relative "spec_helper"
 describe AttributeGuard do
   describe "lock_attributes" do
     it "return the names of the locked attributes" do
+      expect(GenericModel.locked_attribute_names).to match_array(["name"])
       expect(TestModel.locked_attribute_names).to match_array ["name"]
-      expect(TestModelSubclass.locked_attribute_names).to match_array ["name", "value", "foo", "bar", "baz"]
+      expect(TestModelSubclass.locked_attribute_names).to match_array ["name", "value", "foo", "bar", "baz", "bip"]
       expect(UnlockedModel.locked_attribute_names).to match_array []
     end
   end
@@ -103,6 +104,12 @@ describe AttributeGuard do
       record.value = 2
       expect(record.valid?).to be false
       expect(record.errors[:value]).to eq ["Value cannot be changed message"]
+    end
+
+    it "raises an error in strict mode" do
+      record = TestModelSubclass.create!(name: "test", value: 1, bip: 2)
+      record.bip = 3
+      expect { record.valid? }.to raise_error(ActiveModel::StrictValidationFailed)
     end
 
     it "logs a warning if the mode is set to :warn" do

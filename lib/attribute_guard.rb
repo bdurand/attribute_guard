@@ -63,6 +63,9 @@ module AttributeGuard
           message, mode = params
           if mode == :warn
             record&.logger&.warn("Changed locked attribute #{attribute} on #{record.class.name} with id #{record.id}")
+          elsif mode == :strict
+            error = ActiveModel::Error.new(record, attribute, :message)
+            raise ActiveModel::StrictValidationFailed.new(error.full_message)
           elsif mode.is_a?(Proc)
             mode.call(record, attribute)
           else
@@ -113,7 +116,7 @@ module AttributeGuard
   #   user.unlock_attributes(:email).update!(email: "user@example.com")
   #
   # @param attributes [Array<Symbol, String>] the attributes to unlock
-  # @return [ActiveRecord::Base] the object itself
+  # @return [Object] the object itself
   def unlock_attributes(*attributes)
     attributes = attributes.flatten.map(&:to_s)
     return if attributes.empty?
