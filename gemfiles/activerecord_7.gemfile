@@ -2,6 +2,7 @@
 
 source "https://rubygems.org"
 
+gem "activerecord", "~> 7.0"
 gem "rspec", "~> 3.0"
 gem "sqlite3", "~> 1.4.0"
 gem "rake"
@@ -10,6 +11,5 @@ gem "pry-byebug"
 gem "yard"
 gem "appraisal"
 gem "simplecov", "~> 0.22", require: false
-gem "activerecord", "~> 7.0"
 
 gemspec path: "../"
