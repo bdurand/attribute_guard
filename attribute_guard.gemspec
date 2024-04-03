@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.6"
+  spec.required_ruby_version = ">= 2.5"
 
   spec.add_dependency "activemodel", ">= 5.0"
 
