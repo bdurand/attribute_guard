@@ -28,8 +28,10 @@ jobs:
             standardrb: true
           - ruby: "3.0"
             appraisal: "activemodel_7"
-          - ruby: "2.6"
+          - ruby: "2.7"
             appraisal: "activemodel_6"
+          - ruby: "2.5"
+            appraisal: "activemodel_5"
     steps:
     - uses: actions/checkout@v4
     - name: Set up Ruby ${{ matrix.ruby }}

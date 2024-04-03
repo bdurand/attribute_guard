@@ -8,15 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added :strict mode that raises an `ActiveModel::StrictValidationFailed` error if a locked attribute is changed.
+- Added :raise mode that raises an error if a locked attribute is changed.
 
 ### Changed
 
 - Changed gem dependency from activerecord to activemodel.
-
-### Removed
-
-- Dropped support for ActiveRecord 5.x.
 
 ## 1.0.1
 

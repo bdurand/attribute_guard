@@ -36,6 +36,9 @@ end
 module AttributeGuard
   extend ActiveSupport::Concern
 
+  class LockedAttributeError < StandardError
+  end
+
   included do
     class_attribute :locked_attributes, default: {}, instance_accessor: false
     private_class_method :locked_attributes=
@@ -63,9 +66,8 @@ module AttributeGuard
           message, mode = params
           if mode == :warn
             record&.logger&.warn("Changed locked attribute #{attribute} on #{record.class.name} with id #{record.id}")
-          elsif mode == :strict
-            error = ActiveModel::Error.new(record, attribute, :message)
-            raise ActiveModel::StrictValidationFailed.new(error.full_message)
+          elsif mode == :raise
+            raise LockedAttributeError.new("Cannot change #{record.class.name} #{attribute} without unlocking it first")
           elsif mode.is_a?(Proc)
             mode.call(record, attribute)
           else

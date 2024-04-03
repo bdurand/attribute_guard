@@ -60,7 +60,7 @@ class TestModelSubclass < TestModel
   lock_attributes :value, error: "Value cannot be changed message"
   lock_attributes :foo, :bar, mode: :warn
   lock_attributes :baz, mode: ->(record, attribute) { record.errors.add(attribute, "Custom error") }
-  lock_attributes :bip, mode: :strict
+  lock_attributes :bip, mode: :raise
 end
 
 class UnlockedModel < BaseModel

@@ -106,10 +106,10 @@ describe AttributeGuard do
       expect(record.errors[:value]).to eq ["Value cannot be changed message"]
     end
 
-    it "raises an error in strict mode" do
+    it "raises an error in raise mode" do
       record = TestModelSubclass.create!(name: "test", value: 1, bip: 2)
       record.bip = 3
-      expect { record.valid? }.to raise_error(ActiveModel::StrictValidationFailed)
+      expect { record.valid? }.to raise_error(AttributeGuard::LockedAttributeError)
     end
 
     it "logs a warning if the mode is set to :warn" do
