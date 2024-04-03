@@ -8,11 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added :raise mode that raises an error if a locked attribute is changed.
+- Added :raise mode that raises an error if a locked attribute has been changed instead of adding a validation error.
 
 ### Changed
 
-- Changed gem dependency from activerecord to activemodel.
+- Changed gem dependency from `activerecord` to `activemodel`. You can now use locked attributes with ActiveModel classes that include `ActiveModel::Validations` and `ActiveModel::Dirty and implement a `new_record?` method.
 
 ## 1.0.1
 

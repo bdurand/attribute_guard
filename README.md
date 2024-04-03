@@ -119,7 +119,7 @@ record.update!(status: "canceled") # raises ActiveRecord::RecordInvalid error
 
 ### Modes
 
-The default behavior when a locked attribute is changed is to add a validation error to the record. You can change this behavior with the `mode` option when locking attributes.
+The default behavior when a locked attribute is changed is to add a validation error to the record. You can change this behavior with the `mode` option when locking attributes. You still need to validate the record to trigger the locked attribute check, regardless of the mode.
 
 ```ruby
 class MyModel
