@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed gem dependency from activerecord to activemodel.
 
+### Removed
+
+- Dropped support for ActiveRecord 5.x.
+
 ## 1.0.1
 
 ### Added
