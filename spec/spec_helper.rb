@@ -14,42 +14,71 @@ end
 
 Bundler.require(:default, :test)
 
-require "active_record"
+require "active_model"
 
 require_relative "../lib/attribute_guard"
 
-ActiveRecord::Base.establish_connection("adapter" => "sqlite3", "database" => ":memory:")
-
-class BaseModel < ActiveRecord::Base
-  unless table_exists?
-    connection.create_table(table_name) do |t|
-      t.column :type, :string, null: false
-      t.column :name, :string, null: false
-      t.column :value, :integer, null: true
-      t.column :foo, :integer, null: true
-      t.column :bar, :integer, null: true
-      t.column :baz, :integer, null: true
-      t.column :bip, :integer, null: true
-    end
-
-    self.abstract_class = true
-
-    before_save do
-      self.type = self.class.name
-    end
-  end
-
-  @@logger_output = StringIO.new
+class BaseModel
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveModel::Validations
+  include ActiveModel::Dirty
+  include AttributeGuard
 
   class << self
     def logger_output
-      @@logger_output
+      @logger_output ||= StringIO.new
+    end
+
+    def logger
+      @logger ||= Logger.new(logger_output)
+    end
+
+    def create(attributes = {})
+      record = new(attributes)
+      record.save
+      record
+    end
+
+    def define_attribute(name, type = :string)
+      attribute name, type
+
+      attr_reader name
+
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def #{name}=(value)
+          #{name}_will_change! unless value == @#{name}
+          @#{name} = value
+        end
+      RUBY
     end
   end
 
-  self.logger = Logger.new(@@logger_output)
+  define_attribute :id, :integer
+  define_attribute :name, :string
+  define_attribute :value, :integer
+  define_attribute :foo, :string
+  define_attribute :bar, :integer
+  define_attribute :baz, :integer
+  define_attribute :bip, :integer
 
-  include AttributeGuard
+  def logger
+    BaseModel.logger
+  end
+
+  def save
+    if valid?
+      changes_applied
+      self.id ||= rand(1_000_000_000)
+      true
+    else
+      false
+    end
+  end
+
+  def new_record?
+    id.nil?
+  end
 end
 
 class TestModel < BaseModel
@@ -64,13 +93,4 @@ class TestModelSubclass < TestModel
 end
 
 class UnlockedModel < BaseModel
-end
-
-class GenericModel
-  include ActiveModel::Model
-  include AttributeGuard
-
-  attr_accessor :name, :value
-
-  lock_attributes :name
 end

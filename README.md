@@ -5,7 +5,7 @@
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/testdouble/standard)
 [![Gem Version](https://badge.fury.io/rb/attribute_guard.svg)](https://badge.fury.io/rb/attribute_guard)
 
-This Ruby gem provides an extension for ActiveRecord allowing you to declare certain attributes in a model to be locked. Locked attributes cannot be changed once a record is created unless you explicitly allow changes.
+This Ruby gem provides an extension for ActiveRecord/ActiveModel allowing you to declare certain attributes in a model to be locked. Locked attributes cannot be changed once a record is created unless you explicitly allow changes.
 
 This feature can be used for a couple of different purposes.
 
@@ -134,11 +134,15 @@ end
 
 * `:error` - Add a validation error to the record. This is the default.
 
-* `:warn` - Log a warning that the record was changed. This mode is useful to allow you soft deploy locked attributes to production on a mature project and give you information about where you may need to update code to unlock attributes.
+* `:warn` - Log a warning that the record was changed. This mode is useful to allow you soft deploy locked attributes to production on a mature project and give you information about where you may need to update code to unlock attributes. If the model does not have a `logger` method that returns a `Logger`-like object, then the output will be sent to `STDERR`.
 
 * `:raise` = Raise an `AttributeGuard::LockedAttributeError` error.
 
 * `Proc` - If you provide a `Proc` object, it will be called with the record and the attribute name when a locked attribute is changed.
+
+### Using with ActiveModel
+
+The gem works out of the box with ActiveRecord. You can also use it with ActiveModel classes as long as they include the `ActiveModel::Validations` and `ActiveModel::Dirty` modules. The model also needs to implement a `new_record?` method.
 
 ## Installation
 
