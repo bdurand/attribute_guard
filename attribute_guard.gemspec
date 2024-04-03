@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Brian Durand"]
   spec.email = ["bbdurand@gmail.com"]
 
-  spec.summary = "ActiveRecord extension that allows locking attributes to prevent unintended updates."
+  spec.summary = "ActiveRecord/ActiveModel extension that allows locking attributes to prevent unintended updates."
 
   spec.homepage = "https://github.com/bdurand/attribute_guard"
   spec.license = "MIT"
@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.5"
 
-  spec.add_dependency "activerecord", ">= 5.0"
+  spec.add_dependency "activemodel", ">= 5.2"
 
   spec.add_development_dependency "bundler"
 end

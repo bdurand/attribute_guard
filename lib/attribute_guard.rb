@@ -36,6 +36,9 @@ end
 module AttributeGuard
   extend ActiveSupport::Concern
 
+  class LockedAttributeError < StandardError
+  end
+
   included do
     class_attribute :locked_attributes, default: {}, instance_accessor: false
     private_class_method :locked_attributes=
@@ -56,19 +59,40 @@ module AttributeGuard
   # Validator that checks for changes to locked attributes.
   class LockedAttributesValidator < ActiveModel::Validator
     def validate(record)
+      unless record.respond_to?(:new_record?)
+        raise "AttributeGuard can only be used with models that respond to :new_record?"
+      end
+
       return if record.new_record?
 
       record.class.send(:locked_attributes).each do |attribute, params|
         if record.changes.include?(attribute) && record.attribute_locked?(attribute)
           message, mode = params
           if mode == :warn
-            record&.logger&.warn("Changed locked attribute #{attribute} on #{record.class.name} with id #{record.id}")
+            log_warning(record, attribute)
+          elsif mode == :raise
+            raise LockedAttributeError.new(error_message(record, attribute))
           elsif mode.is_a?(Proc)
             mode.call(record, attribute)
           else
             record.errors.add(attribute, message)
           end
         end
+      end
+    end
+
+    private
+
+    def error_message(record, attribute)
+      "Changed locked attribute #{attribute} on #{record.class.name} with id #{record.id}"
+    end
+
+    def log_warning(record, attribute)
+      message = error_message(record, attribute)
+      if record.respond_to?(:logger) && record.logger.respond_to?(:warn)
+        record.logger.warn(message)
+      else
+        warn(message)
       end
     end
   end
@@ -113,7 +137,7 @@ module AttributeGuard
   #   user.unlock_attributes(:email).update!(email: "user@example.com")
   #
   # @param attributes [Array<Symbol, String>] the attributes to unlock
-  # @return [ActiveRecord::Base] the object itself
+  # @return [Object] the object itself
   def unlock_attributes(*attributes)
     attributes = attributes.flatten.map(&:to_s)
     return if attributes.empty?

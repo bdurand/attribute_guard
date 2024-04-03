@@ -3,7 +3,6 @@ source "https://rubygems.org"
 gemspec
 
 gem "rspec", "~> 3.0"
-gem "sqlite3"
 gem "rake"
 gem "standard", "~>1.0"
 gem "pry-byebug"
