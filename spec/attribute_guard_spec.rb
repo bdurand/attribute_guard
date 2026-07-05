@@ -9,6 +9,21 @@ describe AttributeGuard do
       expect(TestModelSubclass.locked_attribute_names).to match_array ["name", "value", "foo", "bar", "baz", "bip"]
       expect(UnlockedModel.locked_attribute_names).to match_array []
     end
+
+    it "raises an error if an invalid mode is specified" do
+      expect {
+        Class.new(BaseModel) do
+          lock_attributes :name, mode: :invalid
+        end
+      }.to raise_error(ArgumentError, "Invalid mode: :invalid")
+    end
+  end
+
+  describe "initialize" do
+    it "forwards keyword arguments to the class constructor" do
+      record = KeywordArgumentsModel.new(option: "test")
+      expect(record.option).to eq "test"
+    end
   end
 
   describe "attribute_locked?" do
@@ -66,6 +81,25 @@ describe AttributeGuard do
       record = TestModel.create(name: "test", value: 1)
       expect(record.unlock_attributes(:name) { 1 }).to be record
     end
+
+    it "returns self when called with no attributes" do
+      record = TestModel.create(name: "test", value: 1)
+      expect(record.unlock_attributes).to be record
+      expect(record.unlock_attributes([])).to be record
+    end
+
+    it "does not share unlocked attributes with a duplicated record" do
+      record = TestModelSubclass.create(name: "test", value: 1)
+      record.unlock_attributes(:name)
+
+      copy = record.dup
+      copy.unlock_attributes(:value)
+
+      expect(copy.attribute_locked?(:name)).to be false
+      expect(copy.attribute_locked?(:value)).to be false
+      expect(record.attribute_locked?(:name)).to be false
+      expect(record.attribute_locked?(:value)).to be true
+    end
   end
 
   describe "validation" do
@@ -79,7 +113,6 @@ describe AttributeGuard do
       record = UnlockedModel.create(name: "test", value: 1)
       expect(record.new_record?).to be false
       record.name = "test2"
-      value = 2
       expect(record).to be_valid
     end
 

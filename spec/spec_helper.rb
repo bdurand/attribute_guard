@@ -94,3 +94,26 @@ end
 
 class UnlockedModel < BaseModel
 end
+
+class KeywordArgumentsModel
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveModel::Validations
+  include ActiveModel::Dirty
+  include AttributeGuard
+
+  lock_attributes :name
+
+  attribute :name, :string
+
+  attr_reader :option
+
+  def initialize(option:)
+    @option = option
+    super()
+  end
+
+  def new_record?
+    true
+  end
+end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set"
+
 require "active_support/concern"
 require "active_support/lazy_load_hooks"
 require "active_model/validator"
@@ -50,7 +52,7 @@ module AttributeGuard
   end
 
   module Initializer
-    def initialize(*)
+    def initialize(...)
       @unlocked_attributes = nil
       super
     end
@@ -65,8 +67,9 @@ module AttributeGuard
 
       return if record.new_record?
 
+      changes = record.changes
       record.class.send(:locked_attributes).each do |attribute, params|
-        if record.changes.include?(attribute) && record.attribute_locked?(attribute)
+        if changes.include?(attribute) && record.attribute_locked?(attribute)
           message, mode = params
           if mode == :warn
             log_warning(record, attribute)
@@ -110,6 +113,10 @@ module AttributeGuard
     # @param mode [Symbol, Proc] mode to use when a locked attribute is changed
     # @return [void]
     def lock_attributes(*attributes, error: :locked, mode: :error)
+      unless mode == :error || mode == :warn || mode == :raise || mode.respond_to?(:call)
+        raise ArgumentError.new("Invalid mode: #{mode.inspect}")
+      end
+
       locked = locked_attributes.dup
       error = error.dup.freeze if error.is_a?(String)
 
@@ -140,7 +147,7 @@ module AttributeGuard
   # @return [Object] the object itself
   def unlock_attributes(*attributes)
     attributes = attributes.flatten.map(&:to_s)
-    return if attributes.empty?
+    return self if attributes.empty?
 
     @unlocked_attributes ||= Set.new
 
@@ -154,7 +161,7 @@ module AttributeGuard
         clear_unlocked_attributes if @unlocked_attributes.empty?
       end
     else
-      @unlocked_attributes.merge(attributes)
+      @unlocked_attributes = @unlocked_attributes.dup.merge(attributes)
     end
 
     self
