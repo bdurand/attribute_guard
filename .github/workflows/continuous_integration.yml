@@ -10,12 +10,14 @@ on:
   pull_request:
     branches-ignore:
       - actions-*
+  workflow_dispatch:
 
 env:
   BUNDLE_CLEAN: "true"
   BUNDLE_PATH: vendor/bundle
   BUNDLE_JOBS: 3
   BUNDLE_RETRY: 3
+  RUBYOPT: '--enable=frozen-string-literal --debug=frozen-string-literal'
 
 jobs:
   build:
@@ -26,6 +28,9 @@ jobs:
         include:
           - ruby: "ruby"
             standardrb: true
+            yard: true
+          - ruby: "3.4"
+            appraisal: "activemodel_8"
           - ruby: "3.0"
             appraisal: "activemodel_7"
           - ruby: "2.7"
@@ -33,7 +38,7 @@ jobs:
           - ruby: "2.7"
             appraisal: "activemodel_5"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Ruby ${{ matrix.ruby }}
       uses: ruby/setup-ruby@v1
       with:
@@ -59,3 +64,6 @@ jobs:
     - name: standardrb
       if:   matrix.standardrb == true
       run:  bundle exec rake standard
+    - name: yard
+      if: matrix.yard == true
+      run:  bundle exec yard doc --fail-on-warning
