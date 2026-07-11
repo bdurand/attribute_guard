@@ -100,6 +100,19 @@ describe AttributeGuard do
       expect(record.attribute_locked?(:name)).to be false
       expect(record.attribute_locked?(:value)).to be true
     end
+
+    it "does not share unlocked attributes with a cloned record" do
+      record = TestModelSubclass.create(name: "test", value: 1)
+      record.unlock_attributes(:name)
+
+      copy = record.clone
+      copy.unlock_attributes(:value)
+
+      expect(copy.attribute_locked?(:name)).to be false
+      expect(copy.attribute_locked?(:value)).to be false
+      expect(record.attribute_locked?(:name)).to be false
+      expect(record.attribute_locked?(:value)).to be true
+    end
   end
 
   describe "validation" do
