@@ -9,7 +9,6 @@ gem "pry-byebug"
 gem "yard"
 gem "appraisal"
 gem "simplecov", "~> 0.22", require: false
-gem "activemodel", "~> 6.0.0"
-gem "logger"
+gem "activemodel", "~> 8.0.0"
 
 gemspec path: "../"

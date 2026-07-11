@@ -126,7 +126,7 @@ class MyModel
   include AttributeGuard
 
   lock_attributes :email, mode: :error
-  lock_attributes :name: mode: :warn
+  lock_attributes :name, mode: :warn
   lock_attributes :updated_at, mode: :raise
   lock_attributes :created_at, mode: ->(record, attribute) { raise "Created timestamp cannot be changed" }
 end
@@ -139,6 +139,10 @@ end
 * `:raise` = Raise an `AttributeGuard::LockedAttributeError` error.
 
 * `Proc` - If you provide a `Proc` object, it will be called with the record and the attribute name when a locked attribute is changed.
+
+### Thread Safety
+
+Unlocked attributes are tracked per model instance. Like ActiveRecord models in general, individual record instances are not thread safe, so you should not share a record between threads while unlocking attributes on it.
 
 ### Using with ActiveModel
 
