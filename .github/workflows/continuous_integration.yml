@@ -28,7 +28,7 @@ jobs:
             appraisal: "activemodel_7"
           - ruby: "2.7"
             appraisal: "activemodel_6"
-          - ruby: "2.7"
+          - ruby: "2.6"
             appraisal: "activemodel_5"
     steps:
       - name: Checkout

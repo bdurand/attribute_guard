@@ -52,7 +52,7 @@ module AttributeGuard
   end
 
   module Initializer
-    def initialize(...)
+    def initialize(*args, **kwargs)
       @unlocked_attributes = nil
       super
     end
