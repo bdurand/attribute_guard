@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "spec_helper"
+require "spec_helper"
 
-describe AttributeGuard do
+RSpec.describe AttributeGuard do
   describe "lock_attributes" do
     it "return the names of the locked attributes" do
       expect(TestModel.locked_attribute_names).to match_array ["name"]
